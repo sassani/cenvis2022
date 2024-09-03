@@ -33,6 +33,7 @@ import os
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
+_settings = {}
 with open(os.path.join(os.path.dirname(__file__), 'settings.json'), 'r') as f:
     _settings = json.load(f)
     
@@ -56,28 +57,41 @@ class CenVis2022Dialog(QtWidgets.QDialog, FORM_CLASS_MAIN):
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
         
-        # self.current_dir = os.path.dirname(os.path.abspath(__file__))
         self.states = pd.read_json(f'{CURRENT_DIR}/constants/us_counties.json', dtype=False)
+        self.get_settings()
+        
         
         self.btnTest.clicked.connect(self.test)
-        self.btnSettings.clicked.connect(self.open_settings)
+        self.btnSettings.clicked.connect(self.open_settings_dialog)
         self.cbState.currentIndexChanged.connect(self.init_counties)
         
         self.init_states()
+        
+        
+        
+    def get_settings(self):
+        self.settings = {}
+        if os.path.exists(os.path.join(CURRENT_DIR, 'settings.json')):
+            with open(os.path.join(CURRENT_DIR, 'settings.json'), 'r') as f:
+                self.settings = json.load(f)
+        else:
+            self.settings = {
+                'census_api_key': 'Please set your API key', 
+                'data_path': 'Please set your data path to save the data'}
+            with open(os.path.join(CURRENT_DIR, 'settings.json'), 'w') as f:
+                json.dump(self.settings, f)
+            
+                
 
-    def open_settings(self):
-        second_dialog = SettingsDialog(self)
-        _ = second_dialog.exec_()
-        # print(result)
+    def open_settings_dialog(self):
+        second_dialog = SettingsDialog(self, self.settings)
+        _res = second_dialog.exec_()
+        if _res == QtWidgets.QDialog.Accepted:
+            self.get_settings()
+        
            
     def test(self):
-        print(CURRENT_DIR, CENSUS_API_KEY, DATA_PATH)
-        # print(self.cbState.currentText())
-        # print(self.cbState.currentData())
-        # print(self.cbCounty.currentText())
-        # print(self.cbCounty.currentData())
-        # second_dialog = SettingsDialog(self)
-        # result = second_dialog.exec_()
+        print(CURRENT_DIR, self.settings)
         
     def init_states(self):
         for state in self.states.iterrows():
@@ -93,26 +107,25 @@ class CenVis2022Dialog(QtWidgets.QDialog, FORM_CLASS_MAIN):
             
             
 class SettingsDialog(QtWidgets.QDialog, FORM_CLASS_SETTINGS):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, _settings=None):
         super(SettingsDialog, self).__init__(parent)
-        # self.setWindowTitle("Settings")
         self.setupUi(self)
         
         self.clbApi.clicked.connect(self.api_clicked)
         self.btnSetDataPath.clicked.connect(self.open_directory_dialog)
-        self.btnSettingsSave.clicked.connect(self.save_settings)
+        self.btnSave.clicked.connect(self.save_settings)
+        self.btnCancel.clicked.connect(self.reject)
         
-        self.txtApiKey.setText(CENSUS_API_KEY)
-        self.txtDataPath.setText(DATA_PATH)
+        self.txtApiKey.setText(_settings['census_api_key'])
+        self.txtDataPath.setText(_settings['data_path'])
+        print(_settings)
         
     def save_settings(self):
-        pass
-        # _settings['census_api_key'] = self.txtApiKey.text()
-        # _settings['data_path'] = self.txtDataPath.text()
-        
-        # with open(os.path.join(os.path.dirname(__file__), 'settings.json'), 'w') as f:
-        #     json.dump(_settings, f)
-        
+        _settings['census_api_key'] = self.txtApiKey.text()
+        _settings['data_path'] = self.txtDataPath.text()
+        with open(os.path.join(CURRENT_DIR, 'settings.json'), 'w') as f:
+            json.dump(_settings, f)
+        self.accept()     
         
         
     def api_clicked(self):

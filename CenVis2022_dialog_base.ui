@@ -96,10 +96,10 @@
   <widget class="QPushButton" name="btnSettings">
    <property name="geometry">
     <rect>
-     <x>480</x>
-     <y>410</y>
-     <width>31</width>
-     <height>23</height>
+     <x>470</x>
+     <y>390</y>
+     <width>41</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="text">
@@ -107,7 +107,13 @@
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>setting_icon.png</normaloff>setting_icon.png</iconset>
+     <normaloff>settings_icon.png</normaloff>settings_icon.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>20</width>
+     <height>20</height>
+    </size>
    </property>
    <property name="checkable">
     <bool>false</bool>
