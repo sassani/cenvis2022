@@ -1,0 +1,147 @@
+Name,Label
+Age5p_Arabic_ACS_16_20,Persons 5 years and over who speak English less than very well and speak Arabic at home
+Age5p_Chinese_ACS_16_20,Persons 5 years and over who speak English less than very well and speak Chinese at home
+Age5p_French_ACS_16_20,"Persons 5 years and over who speak English less than very well and speak French, Haitian, or Cajun at home"
+Age5p_German_ACS_16_20,Persons 5 years and over who speak English less than very well and speak German or another West Germanic language at home
+Age5p_Korean_ACS_16_20,Persons 5 years and over who speak English less than very well and speak Korean at home
+Age5p_Only_English_ACS_16_20,Persons 5 years and over who speak only English
+Age5p_OthAsian_ACS_16_20,Persons 5 years and over who speak English less than very well and speak some other Asian or Pacific Island language at home
+Age5p_OthEuro_ACS_16_20,Persons 5 years and over who speak English less than very well and speak some other Indo-European language at home
+Age5p_OthUnSp_ACS_16_20,Persons 5 years and over who speak English less than very well and speak some other unspecified language at home
+Age5p_Russian_ACS_16_20,"Persons 5 years and over who speak English less than very well and speak and speak Russian, Polish, or other Slavic languages at home"
+Age5p_Spanish_ACS_16_20,Persons 5 years and over who speak English less than very well and speak Spanish at home
+Age5p_Tagalog_ACS_16_20,Persons 5 years and over who speak English less than very well and speak Tagalog at home
+Age5p_Vietnamese_ACS_16_20,Persons 5 years and over who speak English less than very well and speak Vietnamese at home
+Aggr_House_Value_ACS_16_20,Aggregate housing unit value (dollars)
+Aggregate_HH_INC_ACS_16_20,Aggregate Household Income
+AIAN_LAND,"Number of block groups in the tract that are located on any part of an American Indian, Alaska Native, or Native Hawaiian area"
+Born_foreign_ACS_16_20,Persons who are not US citizens at birth
+Born_US_ACS_16_20,Persons who are US citizens at birth
+Children_in_Pov_ACS_16_20,Children under age 18 living in households that are below the poverty line
+Children_PovDet_ACS_16_20,Children under age 18 living in households for which poverty status is determined
+Civ_emp_16_24_ACS_16_20,Civilians aged 16 to 24 who are employed
+Civ_emp_16plus_ACS_16_20,Civilians aged 16 years and over and employed
+Civ_emp_25_44_ACS_16_20,Civilians aged 25 to 44 who are employed
+Civ_emp_45_64_ACS_16_20,Civilians aged 45 to 64 who are employed
+Civ_labor_16_24_ACS_16_20,Civilians aged 16 to 24 in the labor force
+Civ_labor_16plus_ACS_16_20,Civilians aged 16 years and over and in the labor force
+Civ_labor_25_44_ACS_16_20,Civilians aged 25 to 44 in the labor force
+Civ_labor_45_64_ACS_16_20,Civilians aged 45 to 64 in the labor force
+Civ_noninst_pop_65P_ACS_16_20,Civilian noninstitutionalized population aged 65 and over
+Civ_Noninst_Pop_ACS_16_20,Civilian noninstitutionalized population
+Civ_noninst_pop_U19_ACS_16_20,Civilian noninstitutionalized population aged under 19
+Civ_noninst_pop1964_ACS_16_20,Civilian noninstitutionalized population aged 19 to 64
+Civ_unemp_16_24_ACS_16_20,Civilians aged 16 to 24 who are unemployed
+Civ_unemp_16plus_ACS_16_20,Civilians aged 16 years and over and unemployed
+Civ_unemp_25_44_ACS_16_20,Civilians aged 25 to 44 who are unemployed
+Civ_unemp_45_64_ACS_16_20,Civilians aged 45 to 64 who are unemployed
+College_ACS_16_20,Persons 25+ years and over with bachelors degree or higher
+county,Geography
+County,FIPS County: 3-digit code
+County_name,County Name
+Crowd_Occp_U_ACS_16_20,Occupied Units with more than 1.01 persons per room
+Diff_HU_1yr_Ago_ACS_16_20,Different House One Year Ago
+Educ_Grade6orLess_ACS_16_20,Population age 25 and over with educational attainment grade 6 or less
+ENG_VW_ACS_16_20,Limited English speaking household (Use Tot ACS Occ HU as denominator)
+ENG_VW_API_ACS_16_20,Asian and PI - Limited English speaking household (Use Tot ACS Occ HU as denominator)
+ENG_VW_INDO_EURO_ACS_16_20,INDO EURO - Limited English speaking household (Use Tot ACS Occ HU as denominator)
+ENG_VW_OTHER_ACS_16_20,Other - Limited English speaking household (Use Tot ACS Occ HU as denominator)
+ENG_VW_SPAN_ACS_16_20,Spanish - Limited English speaking household (Use Tot ACS Occ HU as denominator)
+Female_No_SP_ACS_16_20,"Households with a female householder, no spouse present"
+Females_ACS_16_20,Number of Females
+Flag,"Tract containing only block groups with block group code 0 (zero), representing areas that are not habitable"
+for,Census API FIPS 'for' clause
+GIDTR,State County Tract: 11-digit code
+HHD_Moved_in_ACS_16_20,"Number of households, householder moved in 2020 or later"
+HHD_No_Internet_ACS_16_20,Households that have no Internet access
+HHD_NoCompDevic_ACS_16_20,Households that do not have a computing device of any kind
+HHD_PPL_Und_18_ACS_16_20,Households with one ore more people under 18 years old
+HHD_w_Broadband_ACS_16_20,Households that have broadband Internet access
+HHD_w_Computer_ACS_16_20,Households that have a desktop or laptop computer
+HHD_w_OnlySPhne_ACS_16_20,Households that have only a smartphone and no other computing device
+Hispanic_ACS_16_20,Persons of Hispanic Origin
+Hispanic_CEN_2020,Persons of Hispanic Origin in the 2020 Census
+in,Census API FIPS 'in' clause
+Inst_GQ_CEN_2020,Institutionalized Group Quarters Population in the 2020 Census
+LAND_AREA,Land area (sq.mi.)
+Males_ACS_16_20,Number of Males
+Med_HHD_Inc_ACS_16_20,Median Household Income - Tract level
+Med_House_Value_ACS_16_20,Median House Value - Tract level
+Median_Age_ACS_16_20,Median Age
+MLT_U10p_ACS_16_20,Housing units in structures containing 10 or more housing units
+MLT_U2_9_STRC_ACS_16_20,Housing units in structures containing two to nine housing units
+Mobile_Homes_ACS_16_20,Mobile Homes
+MrdCple_Fmly_HHD_ACS_16_20,Married-couple families
+MrdCple_w_child_ACS_16_20,Married-couple families with one or more children under age 18
+NH_AIAN_alone_ACS_16_20,"American Indian and Alaska Native alone, not Hispanic or Latino population"
+NH_AIAN_alone_CEN_2020,"Black or African American alone, not Hispanic or Latino population"
+NH_Asian_alone_ACS_16_20,"Asian alone, not Hispanic or Latino population"
+NH_Asian_alone_CEN_2020,Non-Hispanic Asian only in the 2020 Census
+NH_Blk_alone_ACS_16_20,"Black or African American alone, not Hispanic or Latino population"
+NH_Blk_alone_CEN_2020,Non-Hispanic Black/African American only in the 2020 Census
+NH_Multi_Races_ACS_16_20,"Two or more races, not Hispanic or Latino population"
+NH_Multi_Races_CEN_2020,"Two or more races, not Hispanic or Latino population in the 2020 Census"
+NH_NHOPI_alone_ACS_16_20,"Native Hawaiian and Other Pacific Islander alone, not Hispanic or Latino population"
+NH_NHOPI_alone_CEN_2020,Non-Hispanic Native Hawaiian and Other Pacific Islander only in the 2020 Census
+NH_SOR_alone_ACS_16_20,"Some other race alone, not Hispanic or Latino population"
+NH_SOR_alone_CEN_2020,Non-Hispanic Some other race only in the 2020 Census
+NH_White_alone_ACS_16_20,"White alone, not Hispanic or Latino population"
+NH_White_alone_CEN_2020,Non-Hispanic White only in the 2020 Census
+No_Health_Ins_ACS_16_20,Number of people with no health insurance coverage
+No_Plumb_ACS_16_20,Housing units without complete plumbing facilities
+NoHealthIns_65P_ACS_16_20,Population age 65 and over with no health insurance
+NoHealthIns_U19_ACS_16_20,Population under age 19 with no health insurance
+NoHealthIns1964_ACS_16_20,Population age 19 to 64 with no health insurance
+Non_Inst_GQ_CEN_2020,Non-Institutionalized Group Quarters Population in the 2020 Census
+NON_US_Cit_ACS_16_20,Persons who are not US citizens
+NonFamily_HHD_ACS_16_20,Nonfamily households: Unrelated household
+Not_HS_Grad_ACS_16_20,Number of people 25 years old and over who are not high school graduates
+Not_MrdCple_HHD_ACS_16_20,Households with no Married Couple present
+Num_BGs_in_Tract,Number of block groups in the tract
+Occp_U_NO_PH_SRVC_ACS_16_20,Number of housing units without telephone service
+One_Health_Ins_ACS_16_20,Number of people with one type of health insurance coverage
+Othr_Lang_ACS_16_20,Population 5 years and older that speak a language other than English at home
+Owner_Occp_HU_ACS_16_20,Number of owner occupied units
+Pop_18_24_ACS_16_20,Person ages 18 through 24
+Pop_1yr_Over_ACS_16_20,Number of people 1 year old and over (denominator for Diff HU 1 yr ago)
+Pop_25_44_ACS_16_20,Persons ages 25 through 44
+Pop_25yrs_Over_ACS_16_20,Number of people 25 years old and over (denominator for educ. attainment)
+Pop_45_64_ACS_16_20,Persons ages 45 through 64
+Pop_5_17_ACS_16_20,Persons ages 5 through 17
+Pop_5yrs_Over_ACS_16_20,Population 5 years and older (denominator for language)
+Pop_65plus_ACS_16_20,Persons ages 65 and over
+Pop_Disabled_ACS_16_20,Total population with a disability
+Pop_in_HHD_ACS_16_20,Population living in households
+Pop_NoCompDevic_ACS_16_20,Population in households that do not have computing device of any kind
+Pop_under_5_ACS_16_20,Persons less than age 5
+Pop_w_BroadComp_ACS_16_20,Population in households that have both broadband Internet access and a computing device of any kind
+Population_age_3_4_ACS_16_20,Population age 3 and 4
+Pov_Univ_ACS_16_20,Population for whom poverty level is determined (denominator for persons blw pov.)
+Prs_Blw_Pov_Lev_ACS_16_20,Number of people classified as below the poverty level
+PUB_ASST_INC_ACS_16_20,With Public Assistance Income
+Recent_Built_HU_ACS_16_20,Housing Units built in 2020 or later
+Rel_Child_Under_6_ACS_16_20,Number of families with related children under 6 years old
+Rel_Family_HHD_ACS_16_20,Related family households
+Renter_Occp_HU_ACS_16_20,Number of renter occupied units
+Schl_Enroll_3_4_ACS_16_20,Population age 3 and 4 that are enrolled in school
+Self_Response_Rate_ACS_16_20,Self response rate of tract
+Single_Unit_ACS_16_20,Housing units in structures containing only 1 housing unit
+Sngl_Prns_HHD_ACS_16_20,Single Person households
+state,Geography
+State,FIPS State: 2-digit code
+State_name,State Name
+Tot_GQ_CEN_2020,Total Group Quarters Population in the 2020 Census
+Tot_Housing_Units_ACS_16_20,Total Housing Units
+Tot_Housing_Units_CEN_2020,Total Housing Units in the 2020 Census
+Tot_Occp_Units_ACS_16_20,Total Occupied Housing Units
+Tot_Occp_Units_CEN_2020,Total Occupied Housing Units in the 2020 Census
+Tot_Population_ACS_16_20,Total Population
+Tot_Population_CEN_2020,Total population in the 2020 Census
+Tot_Prns_in_HHD_ACS_16_20,Total Persons in households
+Tot_Vacant_Units_ACS_16_20,Total Vacant Housing Units
+Tot_Vacant_Units_CEN_2020,Total vacant Housing Units in the 2020 Census
+tract,Geography
+Tract,Census Tract: 6-digit code
+Two_Plus_Health_Ins_ACS_16_20,Number of people with two or more types of health insurance coverage
+ucgid,Uniform Census Geography Identifier clause
+US_Cit_Nat_ACS_16_20,Persons who are US naturalized citizens

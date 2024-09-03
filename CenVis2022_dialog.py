@@ -29,19 +29,11 @@ import json
 import pandas as pd
 
 from .SettingsDialog import SettingsDialog
+from .nlp.panel import get_relevant_variables_nltk
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-_settings = {}
-with open(os.path.join(os.path.dirname(__file__), 'settings.json'), 'r') as f:
-    _settings = json.load(f)
-    
-CENSUS_API_KEY = _settings['census_api_key']
-DATA_PATH = _settings['data_path']
-
-# This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS_MAIN, _ = uic.loadUiType(os.path.join(CURRENT_DIR, 'CenVis2022_dialog_base.ui'))
-FORM_CLASS_SETTINGS, _ = uic.loadUiType(os.path.join(CURRENT_DIR, 'settings.ui'))
 
 
 class CenVis2022Dialog(QtWidgets.QDialog, FORM_CLASS_MAIN):
@@ -63,10 +55,16 @@ class CenVis2022Dialog(QtWidgets.QDialog, FORM_CLASS_MAIN):
         self.btnTest.clicked.connect(self.test)
         self.btnSettings.clicked.connect(self.open_settings_dialog)
         self.cbState.currentIndexChanged.connect(self.init_counties)
+        self.btnGetItems.clicked.connect(self.get_items)
         
         self.init_states()
         
-        
+    def get_items(self):
+        items = get_relevant_variables_nltk(self.txtQuery.toPlainText())
+        self.lstVariablesList.clear()
+        self.lstVariablesList.addItems(items.keys())
+        # for item in items.keys():
+        #     self.lstVariablesList.addItem(items[item],item)
         
     def get_settings(self):
         self.settings = {}
@@ -88,7 +86,6 @@ class CenVis2022Dialog(QtWidgets.QDialog, FORM_CLASS_MAIN):
         if _res == QtWidgets.QDialog.Accepted:
             self.get_settings()
         
-           
     def test(self):
         print(CURRENT_DIR, self.settings)
         

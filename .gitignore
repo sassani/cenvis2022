@@ -4,3 +4,4 @@ settings.json
 # Exclude cache files
 __pycache__/
 scripts/
+nltk_data/
