@@ -30,6 +30,7 @@ from qgis.PyQt import QtWidgets
 from qgis.PyQt.QtCore import QDir
 import pandas as pd
 import os
+import webbrowser
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -129,6 +130,7 @@ class SettingsDialog(QtWidgets.QDialog, FORM_CLASS_SETTINGS):
         
         
     def api_clicked(self):
+        webbrowser.open('https://api.census.gov/data/key_signup.html')
         print(self.clbApi.isChecked())
         
     def open_directory_dialog(self):
