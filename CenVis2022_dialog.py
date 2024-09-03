@@ -28,16 +28,21 @@ import os
 import json
 import pandas as pd
 
+from .data import files_download
 from .SettingsDialog import SettingsDialog
 from .nlp.panel import get_relevant_variables_nltk
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-FORM_CLASS_MAIN, _ = uic.loadUiType(os.path.join(CURRENT_DIR, 'CenVis2022_dialog_base.ui'))
+CENCUS_API_BASE_URL = f"https://api.census.gov/data/2022/pdb/tract?for=tract:*&get=GIDTR,"
+SHAPE_API_BASE_URL = "https://www2.census.gov/geo/tiger/TIGER2020/TRACT/"
+
+FORM_CLASS_MAIN, _ = uic.loadUiType(
+    os.path.join(CURRENT_DIR, "CenVis2022_dialog_base.ui")
+)
 
 
 class CenVis2022Dialog(QtWidgets.QDialog, FORM_CLASS_MAIN):
-    
     def __init__(self, parent=None):
         """Constructor."""
         super(CenVis2022Dialog, self).__init__(parent)
@@ -47,59 +52,65 @@ class CenVis2022Dialog(QtWidgets.QDialog, FORM_CLASS_MAIN):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
-        
-        self.states = pd.read_json(f'{CURRENT_DIR}/constants/us_counties.json', dtype=False)
+        self.items = {}
+
+        self.states = pd.read_json(
+            f"{CURRENT_DIR}/constants/us_counties.json", dtype=False
+        )
         self.get_settings()
-        
-        
+
         self.btnTest.clicked.connect(self.test)
         self.btnSettings.clicked.connect(self.open_settings_dialog)
         self.cbState.currentIndexChanged.connect(self.init_counties)
         self.btnGetItems.clicked.connect(self.get_items)
-        
+
         self.init_states()
-        
+
     def get_items(self):
-        items = get_relevant_variables_nltk(self.txtQuery.toPlainText())
+        self.items = get_relevant_variables_nltk(self.txtQuery.toPlainText())
         self.lstVariablesList.clear()
-        self.lstVariablesList.addItems(items.keys())
-        # for item in items.keys():
-        #     self.lstVariablesList.addItem(items[item],item)
-        
+        self.lstVariablesList.addItems(self.items.keys())
+
     def get_settings(self):
         self.settings = {}
-        if os.path.exists(os.path.join(CURRENT_DIR, 'settings.json')):
-            with open(os.path.join(CURRENT_DIR, 'settings.json'), 'r') as f:
+        if os.path.exists(os.path.join(CURRENT_DIR, "settings.json")):
+            with open(os.path.join(CURRENT_DIR, "settings.json"), "r") as f:
                 self.settings = json.load(f)
         else:
             self.settings = {
-                'census_api_key': 'Please set your API key', 
-                'data_path': 'Please set your data path to save the data'}
-            with open(os.path.join(CURRENT_DIR, 'settings.json'), 'w') as f:
+                "census_api_key": "Please set your API key",
+                "data_path": "Please set your data path to save the data",
+            }
+            with open(os.path.join(CURRENT_DIR, "settings.json"), "w") as f:
                 json.dump(self.settings, f)
-            
-                
 
     def open_settings_dialog(self):
         second_dialog = SettingsDialog(self, self.settings)
         _res = second_dialog.exec_()
         if _res == QtWidgets.QDialog.Accepted:
             self.get_settings()
-        
+
     def test(self):
-        print(CURRENT_DIR, self.settings)
-        
+        cencus_data = []
+        state_fips = self.cbState.currentData()
+        county_fips = self.cbCounty.currentData()
+        for item in self.lstVariablesList.selectedItems():
+            variable_tag = self.items[item.text()]
+            cencus_file = f"{self.settings['data_path']}/cencus_data/{state_fips}/{county_fips}/{variable_tag}.json" # we will check this path before trying to download the file.
+            cencus_url = f"{CENCUS_API_BASE_URL}{variable_tag}&in=state:{state_fips}&in=county:{county_fips}&key={self.settings['census_api_key']}"
+            cencus_data.append((cencus_url, cencus_file))
+        # print(self.lstVariablesList.selectedItems())
+        # print(cencus_data)
+        cencus_paths = files_download(cencus_data)
+
     def init_states(self):
         for state in self.states.iterrows():
-            self.cbState.addItem(state[1]['name'],state[1]['fips'])
+            self.cbState.addItem(state[1]["name"], state[1]["fips"])
         self.init_counties()
-            
+
     def init_counties(self):
         self.cbCounty.clear()
         state_fips = self.cbState.currentData()
-        counties = self.states[self.states['fips'] == state_fips]['counties']
+        counties = self.states[self.states["fips"] == state_fips]["counties"]
         for county in counties.iloc[0]:
-            self.cbCounty.addItem(county['name'],county['fips'])
-            
-            
-
+            self.cbCounty.addItem(county["name"], county["fips"])
