@@ -24,13 +24,22 @@
 
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
+from qgis.PyQt.QtCore import QThread
+
+# from PyQt5.QtCore import QThread
+
 import os
+import sys
 import json
 import pandas as pd
+from multiprocessing import Process
 
-from .data import files_download
+from .data import file_download_path
+from .cencus_downloader import CensusDownloader
 from .SettingsDialog import SettingsDialog
 from .nlp.panel import get_relevant_variables_nltk
+
+# from .pyqt_file_downloader import DownloadWidget
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -59,7 +68,7 @@ class CenVis2022Dialog(QtWidgets.QDialog, FORM_CLASS_MAIN):
         )
         self.get_settings()
 
-        self.btnTest.clicked.connect(self.test)
+        self.btnDownload.clicked.connect(self.test)
         self.btnSettings.clicked.connect(self.open_settings_dialog)
         self.cbState.currentIndexChanged.connect(self.init_counties)
         self.btnGetItems.clicked.connect(self.get_items)
@@ -91,17 +100,50 @@ class CenVis2022Dialog(QtWidgets.QDialog, FORM_CLASS_MAIN):
             self.get_settings()
 
     def test(self):
-        cencus_data = []
+        census_data = []
         state_fips = self.cbState.currentData()
         county_fips = self.cbCounty.currentData()
+        self.btnDownload.setText("Downloading...")
+        self.btnDownload.setEnabled(False)
         for item in self.lstVariablesList.selectedItems():
             variable_tag = self.items[item.text()]
-            cencus_file = f"{self.settings['data_path']}/cencus_data/{state_fips}/{county_fips}/{variable_tag}.json" # we will check this path before trying to download the file.
-            cencus_url = f"{CENCUS_API_BASE_URL}{variable_tag}&in=state:{state_fips}&in=county:{county_fips}&key={self.settings['census_api_key']}"
-            cencus_data.append((cencus_url, cencus_file))
-        # print(self.lstVariablesList.selectedItems())
-        # print(cencus_data)
-        cencus_paths = files_download(cencus_data)
+            census_file = f"{self.settings['data_path']}/census_data/{state_fips}/{county_fips}/{variable_tag}.json"
+            census_url = f"{CENCUS_API_BASE_URL}{variable_tag}&in=state:{state_fips}&in=county:{county_fips}&key={self.settings['census_api_key']}"
+            census_data.append((census_url, census_file))
+
+        self.download_thread = QThread()
+        self.downloader = CensusDownloader(census_data)
+        self.downloader.moveToThread(self.download_thread)
+
+        self.download_thread.started.connect(self.downloader.run)
+        self.downloader.finished.connect(self.download_thread.quit)
+        self.downloader.finished.connect(self.downloader.deleteLater)
+        self.download_thread.finished.connect(self.download_thread.deleteLater)
+
+        self.downloader.progress.connect(self.update_progress)
+        self.downloader.finished.connect(self.download_finished)
+
+        self.download_thread.start()
+        
+    def update_progress(self, current, total):
+        percentage = int((current / total)*100)
+        self.progressBar.setValue(percentage)
+        # self.iface.messageBar().pushInfo("Census Downloader", f"Progress: {percentage}%")
+
+    def download_finished(self, results):
+        self.btnDownload.setText("Done!")
+        self.btnDownload.setEnabled(True)
+        self.btnDownload.clicked.disconnect()
+        self.btnDownload.clicked.connect(self.accept)
+
+        # self.iface.messageBar().pushInfo("Census Downloader", "Download completed!")
+        for result in results:
+            if result.startswith("Error"):
+                pass
+                # self.iface.messageBar().pushWarning("Census Downloader", result)
+            else:
+                pass
+                # QgsApplication.messageLog().logMessage(f"Downloaded: {result}", 'CensusDownloader', level=Qgis.Info)
 
     def init_states(self):
         for state in self.states.iterrows():
