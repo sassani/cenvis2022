@@ -52,9 +52,10 @@ FORM_CLASS_MAIN, _ = uic.loadUiType(
 
 
 class CenVis2022Dialog(QtWidgets.QDialog, FORM_CLASS_MAIN):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, plugin_instance=None):
         """Constructor."""
         super(CenVis2022Dialog, self).__init__(parent)
+        self.plugin_instance = plugin_instance
         # Set up the user interface from Designer through FORM_CLASS.
         # After self.setupUi() you can access any designer object by doing
         # self.<objectname>, and you can use autoconnect slots - see
@@ -68,10 +69,12 @@ class CenVis2022Dialog(QtWidgets.QDialog, FORM_CLASS_MAIN):
         )
         self.get_settings()
 
-        self.btnDownload.clicked.connect(self.test)
+        self.btnDownload.clicked.connect(self.onDownload)
         self.btnSettings.clicked.connect(self.open_settings_dialog)
         self.cbState.currentIndexChanged.connect(self.init_counties)
         self.btnGetItems.clicked.connect(self.get_items)
+        
+        self.btnTest.clicked.connect(self.onTest)
 
         self.init_states()
 
@@ -99,7 +102,7 @@ class CenVis2022Dialog(QtWidgets.QDialog, FORM_CLASS_MAIN):
         if _res == QtWidgets.QDialog.Accepted:
             self.get_settings()
 
-    def test(self):
+    def onDownload(self):
         census_data = []
         state_fips = self.cbState.currentData()
         county_fips = self.cbCounty.currentData()
@@ -110,6 +113,10 @@ class CenVis2022Dialog(QtWidgets.QDialog, FORM_CLASS_MAIN):
             census_file = f"{self.settings['data_path']}/census_data/{state_fips}/{county_fips}/{variable_tag}.json"
             census_url = f"{CENCUS_API_BASE_URL}{variable_tag}&in=state:{state_fips}&in=county:{county_fips}&key={self.settings['census_api_key']}"
             census_data.append((census_url, census_file))
+            
+        shape_file = f"{self.settings['data_path']}/shapes_files/tl_2020_{state_fips}_tract.zip"
+        shape_url = f"{SHAPE_API_BASE_URL}tl_2020_{state_fips}_tract.zip"
+        census_data.append((shape_url, shape_file))
 
         self.download_thread = QThread()
         self.downloader = CensusDownloader(census_data)
@@ -128,22 +135,13 @@ class CenVis2022Dialog(QtWidgets.QDialog, FORM_CLASS_MAIN):
     def update_progress(self, current, total):
         percentage = int((current / total)*100)
         self.progressBar.setValue(percentage)
-        # self.iface.messageBar().pushInfo("Census Downloader", f"Progress: {percentage}%")
+        self.plugin_instance.iface.messageBar().pushInfo("Census Downloader", f"Progress: {percentage}%")
 
     def download_finished(self, results):
         self.btnDownload.setText("Done!")
         self.btnDownload.setEnabled(True)
         self.btnDownload.clicked.disconnect()
         self.btnDownload.clicked.connect(self.accept)
-
-        # self.iface.messageBar().pushInfo("Census Downloader", "Download completed!")
-        for result in results:
-            if result.startswith("Error"):
-                pass
-                # self.iface.messageBar().pushWarning("Census Downloader", result)
-            else:
-                pass
-                # QgsApplication.messageLog().logMessage(f"Downloaded: {result}", 'CensusDownloader', level=Qgis.Info)
 
     def init_states(self):
         for state in self.states.iterrows():
@@ -156,3 +154,13 @@ class CenVis2022Dialog(QtWidgets.QDialog, FORM_CLASS_MAIN):
         counties = self.states[self.states["fips"] == state_fips]["counties"]
         for county in counties.iloc[0]:
             self.cbCounty.addItem(county["name"], county["fips"])
+
+
+    def onTest(self):
+        print("Test")
+        try:
+            self.plugin_instance.testFunctionAtPlugin()
+            self.plugin_instance.iface.messageBar().pushInfo("Census Downloader", "Test")
+        except Exception as e:
+            print("Error", e)
+            

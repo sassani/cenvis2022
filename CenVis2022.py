@@ -187,7 +187,7 @@ class CenVis2022:
         # Only create GUI ONCE in callback, so that it will only load when the plugin is started
         if self.first_start == True:
             self.first_start = False
-            self.dlg = CenVis2022Dialog()
+            self.dlg = CenVis2022Dialog(plugin_instance=self)
 
         # show the dialog
         self.dlg.show()
@@ -198,3 +198,6 @@ class CenVis2022:
             # Do something useful here - delete the line containing pass and
             # substitute with your code.
             pass
+
+    def testFunctionAtPlugin(self):
+        print("Test function at plugin")
