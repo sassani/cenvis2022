@@ -35,6 +35,7 @@ import json
 import pandas as pd
 from multiprocessing import Process
 
+from .config.config_manager import ConfigurationManager
 from .data import file_download_path
 from .cencus_downloader import CensusDownloader
 from .SettingsDialog import SettingsDialog
@@ -59,11 +60,11 @@ STATE_DONE = "done"
 
 
 class CenVis2022Dialog(QtWidgets.QDialog, FORM_CLASS_MAIN):
-    def __init__(self, parent=None, plugin_instance=None, config_mng=None):
+    def __init__(self, parent=None, plugin_instance=None, config_mng:ConfigurationManager=None):
         """Constructor."""
         super(CenVis2022Dialog, self).__init__(parent)
         self.plugin_instance = plugin_instance
-        self.configs = config_mng
+        self.config_mng:ConfigurationManager = config_mng
         # Set up the user interface from Designer through FORM_CLASS.
         # After self.setupUi() you can access any designer object by doing
         # self.<objectname>, and you can use autoconnect slots - see
@@ -104,7 +105,7 @@ class CenVis2022Dialog(QtWidgets.QDialog, FORM_CLASS_MAIN):
         self.lstVariablesList.addItems(self.items.keys())
 
     def onSettingsDialog(self):
-        settings_dialog = SettingsDialog(self, config_mng=self.configs)
+        settings_dialog = SettingsDialog(self, config_mng=self.config_mng)
         _ = settings_dialog.exec_()
 
     def onDownload(self):
@@ -112,16 +113,21 @@ class CenVis2022Dialog(QtWidgets.QDialog, FORM_CLASS_MAIN):
         self.census_data = []
         state_fips = self.cbState.currentData()
         county_fips = self.cbCounty.currentData()
+        county_filter_string = f"&in=county:{county_fips}"
+        if self.chbAllCounties.isChecked():
+            county_fips = "all"
+            county_filter_string = ""
+        
         self.btnDownload.setText("Downloading...")
         self.btnDownload.setEnabled(False)
         for item in self.lstVariablesList.selectedItems():
             variable_tag = self.items[item.text()]
-            census_file = f"{self.settings['data_path']}/census_data/{state_fips}/{county_fips}/{variable_tag}.json"
-            census_url = f"{CENCUS_API_BASE_URL}{variable_tag}&in=state:{state_fips}&in=county:{county_fips}&key={self.settings['census_api_key']}"
+            census_file = f"{self.config_mng.settings.data_path}/census_data/{state_fips}/{county_fips}/{variable_tag}.json"
+            census_url = f"{CENCUS_API_BASE_URL}{variable_tag}&in=state:{state_fips}{county_filter_string}&key={self.config_mng.settings.census_api_key}"
             self.census_data.append((census_url, census_file))
 
         shape_file = (
-            f"{self.settings['data_path']}/shapes_files/tl_2020_{state_fips}_tract.zip"
+            f"{self.config_mng.settings.data_path}/shapes_files/tl_2020_{state_fips}_tract.zip"
         )
         shape_url = f"{SHAPE_API_BASE_URL}tl_2020_{state_fips}_tract.zip"
         self.census_data.append((shape_url, shape_file))

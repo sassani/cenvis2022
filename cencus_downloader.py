@@ -22,16 +22,3 @@ class CensusDownloader(QObject):
             results.append(result)
             self.progress.emit(i, len(self.census_data))
         self.finished.emit(results)
-
-    def _download_census_data(self, url, file_path):
-        try:
-            os.makedirs(os.path.dirname(file_path), exist_ok=True)
-            response = requests.get(url)
-            if response.status_code == 200:
-                with open(file_path, 'wb') as f:
-                    f.write(response.content)
-                return file_path
-            else:
-                return f"Error: HTTP {response.status_code}"
-        except Exception as e:
-            return f"Error: {str(e)}"
