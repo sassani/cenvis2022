@@ -1,8 +1,14 @@
 # Exclude settings files
 settings.json
+config/*.json
+settings/*.json
+
+# exclude ide files
+.vscode/
+
 
 # Exclude cache files
 __pycache__/
 scripts/
 nltk_data/
-*_.py
+# *_.py

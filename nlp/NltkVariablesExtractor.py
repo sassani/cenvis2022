@@ -9,10 +9,10 @@ NLTK_DATA_DIR = f'{CURRENT_DIR}/nltk_data'
 nltk.data.path.append(NLTK_DATA_DIR)
 
 # Download necessary NLTK data
-nltk.download('punkt', download_dir=NLTK_DATA_DIR)
-nltk.download('punkt_tab', download_dir=NLTK_DATA_DIR)
-nltk.download('stopwords', download_dir=NLTK_DATA_DIR)
-nltk.download('wordnet', download_dir=NLTK_DATA_DIR)
+nltk.download('punkt', download_dir=NLTK_DATA_DIR, quiet=True)
+nltk.download('punkt_tab', download_dir=NLTK_DATA_DIR, quiet=True)
+nltk.download('stopwords', download_dir=NLTK_DATA_DIR, quiet=True)
+nltk.download('wordnet', download_dir=NLTK_DATA_DIR, quiet=True)
 
 
 

@@ -27,9 +27,13 @@ from qgis.PyQt.QtWidgets import QAction
 
 # Initialize Qt resources from file resources.py
 from .resources import *
+
 # Import the code for the dialog
 from .CenVis2022_dialog import CenVis2022Dialog
+from .qgis_census_data_visualization import CensusDataVisualizer
 import os.path
+
+from .config.config_manager import ConfigurationManager
 
 
 class CenVis2022:
@@ -43,16 +47,18 @@ class CenVis2022:
             application at run time.
         :type iface: QgsInterface
         """
+        self.config_mng: ConfigurationManager = ConfigurationManager()
+        self.config_mng.load_config()
+
         # Save reference to the QGIS interface
         self.iface = iface
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
         # initialize locale
-        locale = QSettings().value('locale/userLocale')[0:2]
+        locale = QSettings().value("locale/userLocale")[0:2]
         locale_path = os.path.join(
-            self.plugin_dir,
-            'i18n',
-            'CenVis2022_{}.qm'.format(locale))
+            self.plugin_dir, "i18n", "CenVis2022_{}.qm".format(locale)
+        )
 
         if os.path.exists(locale_path):
             self.translator = QTranslator()
@@ -61,7 +67,7 @@ class CenVis2022:
 
         # Declare instance attributes
         self.actions = []
-        self.menu = self.tr(u'&CenVis2022')
+        self.menu = self.tr("&CenVis2022")
 
         # Check if plugin was started the first time in current QGIS session
         # Must be set in initGui() to survive plugin reloads
@@ -80,8 +86,7 @@ class CenVis2022:
         :rtype: QString
         """
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
-        return QCoreApplication.translate('CenVis2022', message)
-
+        return QCoreApplication.translate("CenVis2022", message)
 
     def add_action(
         self,
@@ -93,7 +98,8 @@ class CenVis2022:
         add_to_toolbar=True,
         status_tip=None,
         whats_this=None,
-        parent=None):
+        parent=None,
+    ):
         """Add a toolbar icon to the toolbar.
 
         :param icon_path: Path to the icon for this action. Can be a resource
@@ -149,9 +155,7 @@ class CenVis2022:
             self.iface.addToolBarIcon(action)
 
         if add_to_menu:
-            self.iface.addPluginToMenu(
-                self.menu,
-                action)
+            self.iface.addPluginToMenu(self.menu, action)
 
         self.actions.append(action)
 
@@ -160,34 +164,32 @@ class CenVis2022:
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
-        icon_path = ':/plugins/CenVis2022/icon.png'
+        icon_path = ":/plugins/CenVis2022/icon.png"
         self.add_action(
             icon_path,
-            text=self.tr(u'CenVis2022'),
+            text=self.tr("CenVis2022"),
             callback=self.run,
-            parent=self.iface.mainWindow())
+            parent=self.iface.mainWindow(),
+        )
 
         # will be set False in run()
         self.first_start = True
 
-
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
-            self.iface.removePluginMenu(
-                self.tr(u'&CenVis2022'),
-                action)
+            self.iface.removePluginMenu(self.tr("&CenVis2022"), action)
             self.iface.removeToolBarIcon(action)
-
 
     def run(self):
         """Run method that performs all the real work"""
-
         # Create the dialog with elements (after translation) and keep reference
         # Only create GUI ONCE in callback, so that it will only load when the plugin is started
         if self.first_start == True:
             self.first_start = False
-            self.dlg = CenVis2022Dialog(plugin_instance=self)
+            self.dlg = CenVis2022Dialog(
+                plugin_instance=self, config_mng=self.config_mng
+            )
 
         # show the dialog
         self.dlg.show()
@@ -199,5 +201,28 @@ class CenVis2022:
             # substitute with your code.
             pass
 
-    def testFunctionAtPlugin(self):
-        print("Test function at plugin")
+    def testFunctionAtPlugin(self, state, county, vars=[]):
+        shape_path = (
+            f"{self.config_mng.settings.data_path}\\shapes_files\\tl_2020_{state}_tract.zip"
+        )
+        census_dir = f"{self.config_mng.settings.data_path}\\census_data\\{state}\\{county}"
+        print(f"State file:{shape_path}, County file:{census_dir}")
+        return 0
+        if len(vars) > 0:
+            for var in vars:
+                # data_path = f"State:{shape_path}\nCounty:{census_path}\nvariable:{var}\n\n"
+                print(f"County file:{census_dir}/{var}.json\n")
+        else:
+            if os.path.exists(census_dir):
+                files = os.listdir(census_dir)
+            else:
+                files = []
+            # print(f"Files in {census_path}: {files}")
+            for file in files:
+                print(f"County file:{census_dir}/{file}\n")
+        # print(f"State:{shape_path}\nCounty:{census_path}\nvariable:{vars}\n\n")
+
+        # print("data_path:", data_path)
+        data_vis = CensusDataVisualizer(shape_path, census_dir)
+        data_vis.render_base_layer()
+        data_vis.process_demographic_data()

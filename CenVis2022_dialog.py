@@ -24,6 +24,7 @@
 
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
+from qgis.core import Qgis
 from qgis.PyQt.QtCore import QThread
 
 # from PyQt5.QtCore import QThread
@@ -43,67 +44,72 @@ from .nlp.panel import get_relevant_variables_nltk
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-CENCUS_API_BASE_URL = f"https://api.census.gov/data/2022/pdb/tract?for=tract:*&get=GIDTR,"
+CENCUS_API_BASE_URL = (
+    f"https://api.census.gov/data/2022/pdb/tract?for=tract:*&get=GIDTR,"
+)
 SHAPE_API_BASE_URL = "https://www2.census.gov/geo/tiger/TIGER2020/TRACT/"
 
 FORM_CLASS_MAIN, _ = uic.loadUiType(
     os.path.join(CURRENT_DIR, "CenVis2022_dialog_base.ui")
 )
 
+STATE_READY = "ready"
+STATE_DOWNLOADING = "downloading"
+STATE_DONE = "done"
+
 
 class CenVis2022Dialog(QtWidgets.QDialog, FORM_CLASS_MAIN):
-    def __init__(self, parent=None, plugin_instance=None):
+    def __init__(self, parent=None, plugin_instance=None, config_mng=None):
         """Constructor."""
         super(CenVis2022Dialog, self).__init__(parent)
         self.plugin_instance = plugin_instance
+        self.configs = config_mng
         # Set up the user interface from Designer through FORM_CLASS.
         # After self.setupUi() you can access any designer object by doing
         # self.<objectname>, and you can use autoconnect slots - see
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
+        self.census_data = []
         self.setupUi(self)
         self.items = {}
+        self.state = STATE_READY
 
-        self.states = pd.read_json(
+        self.us_states = pd.read_json(
             f"{CURRENT_DIR}/constants/us_counties.json", dtype=False
         )
-        self.get_settings()
 
         self.btnDownload.clicked.connect(self.onDownload)
-        self.btnSettings.clicked.connect(self.open_settings_dialog)
-        self.cbState.currentIndexChanged.connect(self.init_counties)
+        self.btnSettings.clicked.connect(self.onSettingsDialog)
+        self.lstVariablesList.itemSelectionChanged.connect(self.onItemListChange)
+        self.cbState.currentIndexChanged.connect(self.onStateChange)
+        self.cbCounty.currentIndexChanged.connect(self.onCountyChange)
         self.btnGetItems.clicked.connect(self.get_items)
-        
+
         self.btnTest.clicked.connect(self.onTest)
 
         self.init_states()
+
+    def onItemListChange(self):
+        self.onChangeAnything()
+
+    def onStateChange(self):
+        self.init_counties()
+
+    def onCountyChange(self):
+        self.onChangeAnything()
 
     def get_items(self):
         self.items = get_relevant_variables_nltk(self.txtQuery.toPlainText())
         self.lstVariablesList.clear()
         self.lstVariablesList.addItems(self.items.keys())
 
-    def get_settings(self):
-        self.settings = {}
-        if os.path.exists(os.path.join(CURRENT_DIR, "settings.json")):
-            with open(os.path.join(CURRENT_DIR, "settings.json"), "r") as f:
-                self.settings = json.load(f)
-        else:
-            self.settings = {
-                "census_api_key": "Please set your API key",
-                "data_path": "Please set your data path to save the data",
-            }
-            with open(os.path.join(CURRENT_DIR, "settings.json"), "w") as f:
-                json.dump(self.settings, f)
-
-    def open_settings_dialog(self):
-        second_dialog = SettingsDialog(self, self.settings)
-        _res = second_dialog.exec_()
-        if _res == QtWidgets.QDialog.Accepted:
-            self.get_settings()
+    def onSettingsDialog(self):
+        settings_dialog = SettingsDialog(self, config_mng=self.configs)
+        _ = settings_dialog.exec_()
 
     def onDownload(self):
-        census_data = []
+        self.state = STATE_DOWNLOADING
+        self.census_data = []
         state_fips = self.cbState.currentData()
         county_fips = self.cbCounty.currentData()
         self.btnDownload.setText("Downloading...")
@@ -112,14 +118,16 @@ class CenVis2022Dialog(QtWidgets.QDialog, FORM_CLASS_MAIN):
             variable_tag = self.items[item.text()]
             census_file = f"{self.settings['data_path']}/census_data/{state_fips}/{county_fips}/{variable_tag}.json"
             census_url = f"{CENCUS_API_BASE_URL}{variable_tag}&in=state:{state_fips}&in=county:{county_fips}&key={self.settings['census_api_key']}"
-            census_data.append((census_url, census_file))
-            
-        shape_file = f"{self.settings['data_path']}/shapes_files/tl_2020_{state_fips}_tract.zip"
+            self.census_data.append((census_url, census_file))
+
+        shape_file = (
+            f"{self.settings['data_path']}/shapes_files/tl_2020_{state_fips}_tract.zip"
+        )
         shape_url = f"{SHAPE_API_BASE_URL}tl_2020_{state_fips}_tract.zip"
-        census_data.append((shape_url, shape_file))
+        self.census_data.append((shape_url, shape_file))
 
         self.download_thread = QThread()
-        self.downloader = CensusDownloader(census_data)
+        self.downloader = CensusDownloader(self.census_data)
         self.downloader.moveToThread(self.download_thread)
 
         self.download_thread.started.connect(self.downloader.run)
@@ -131,36 +139,60 @@ class CenVis2022Dialog(QtWidgets.QDialog, FORM_CLASS_MAIN):
         self.downloader.finished.connect(self.download_finished)
 
         self.download_thread.start()
-        
+
     def update_progress(self, current, total):
-        percentage = int((current / total)*100)
+        percentage = int((current / total) * 100)
         self.progressBar.setValue(percentage)
-        self.plugin_instance.iface.messageBar().pushInfo("Census Downloader", f"Progress: {percentage}%")
+        self.plugin_instance.iface.messageBar().pushInfo(
+            "Census Downloader", f"Progress: {percentage}%"
+        )
 
     def download_finished(self, results):
+        self.state = STATE_DONE
         self.btnDownload.setText("Done!")
         self.btnDownload.setEnabled(True)
         self.btnDownload.clicked.disconnect()
         self.btnDownload.clicked.connect(self.accept)
 
     def init_states(self):
-        for state in self.states.iterrows():
+        for state in self.us_states.iterrows():
             self.cbState.addItem(state[1]["name"], state[1]["fips"])
         self.init_counties()
 
     def init_counties(self):
         self.cbCounty.clear()
         state_fips = self.cbState.currentData()
-        counties = self.states[self.states["fips"] == state_fips]["counties"]
+        counties = self.us_states[self.us_states["fips"] == state_fips]["counties"]
         for county in counties.iloc[0]:
             self.cbCounty.addItem(county["name"], county["fips"])
 
+    def onChangeAnything(self):
+        if self.state != STATE_READY:
+            self.btnDownload.setText("Download")
+            self.btnDownload.clicked.disconnect()
+            self.btnDownload.clicked.connect(self.onDownload)
+            self.btnDownload.setEnabled(True)
+            self.state = STATE_READY
+        # print("Something Changed")
 
     def onTest(self):
-        print("Test")
+        # if len(self.lstVariablesList.selectedItems()) == 0:
+        #     self.plugin_instance.iface.messageBar().pushMessage(
+        #         "Census Downloader",
+        #         "At least one variable should be selected.",
+        #         level=Qgis.Critical, duration=20)
+        #     return
+        # print(self.configs.app.data_path)
+        # print([self.items[item.text()] for item in self.lstVariablesList.selectedItems()])
         try:
-            self.plugin_instance.testFunctionAtPlugin()
-            self.plugin_instance.iface.messageBar().pushInfo("Census Downloader", "Test")
+            self.plugin_instance.testFunctionAtPlugin(
+                self.cbState.currentData(),
+                self.cbCounty.currentData(),
+                [
+                    self.items[item.text()]
+                    for item in self.lstVariablesList.selectedItems()
+                ],
+            )
+            # self.plugin_instance.iface.messageBar().pushMessage("Census Downloader", "Test2", level=Qgis.Success)
         except Exception as e:
             print("Error", e)
-            
