@@ -35,6 +35,7 @@ import json
 import pandas as pd
 from multiprocessing import Process
 
+from .widgets.checkable_comboBox import CheckableComboBox
 from .config.config_manager import ConfigurationManager
 from .data import file_download_path
 from .cencus_downloader import CensusDownloader

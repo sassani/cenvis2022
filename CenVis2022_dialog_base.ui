@@ -125,7 +125,7 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QComboBox" name="cbCounty">
+  <widget class="CheckableComboBox" name="cbCounty">
    <property name="geometry">
     <rect>
      <x>72</x>
@@ -258,6 +258,13 @@
    </property>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CheckableComboBox</class>
+   <extends>QComboBox</extends>
+   <header>cenvis2022.widgets.checkable_comboBox</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
