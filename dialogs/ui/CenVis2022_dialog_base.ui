@@ -31,6 +31,14 @@
   <property name="windowTitle">
    <string>CensusVis2022</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normalon>icons/icon.png</normalon>
+   </iconset>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
@@ -110,7 +118,7 @@
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>settings_icon.png</normaloff>settings_icon.png</iconset>
+     <normaloff>icons/settings_icon.png</normaloff>icons/settings_icon.png</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -125,7 +133,7 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="CheckableComboBox" name="cbCounty">
+  <widget class="QComboBox" name="cbCounty">
    <property name="geometry">
     <rect>
      <x>72</x>
@@ -258,13 +266,6 @@
    </property>
   </widget>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>CheckableComboBox</class>
-   <extends>QComboBox</extends>
-   <header>cenvis2022.widgets.checkable_comboBox</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

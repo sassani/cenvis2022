@@ -10,7 +10,7 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QVariant
 
-from .data import read_zipped_shapefile, read_json_data
+from .file_manager import read_zipped_shapefile, read_json_data
 
 # from .qgis_shapefile_manager import import_zipped_shapefile
 from .qgis_layer_manager import (

@@ -5,11 +5,11 @@ import os
 import json
 import webbrowser
 
-from .config.config_manager import ConfigurationManager
+from ..config.config_manager import ConfigurationManager
 
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-FORM_CLASS_SETTINGS, _ = uic.loadUiType(os.path.join(CURRENT_DIR, "settings.ui"))
+FORM_CLASS_SETTINGS, _ = uic.loadUiType(os.path.join(CURRENT_DIR, "ui/settings.ui"))
 
 
 class SettingsDialog(QtWidgets.QDialog, FORM_CLASS_SETTINGS):

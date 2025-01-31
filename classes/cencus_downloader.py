@@ -4,7 +4,7 @@ import os
 import requests
 import json
 
-from .data import file_download_path
+from .file_manager import file_download_path
 
 class CensusDownloader(QObject):
     progress = pyqtSignal(int, int)

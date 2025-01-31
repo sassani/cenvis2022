@@ -29,8 +29,8 @@ from qgis.PyQt.QtWidgets import QAction
 from .resources import *
 
 # Import the code for the dialog
-from .CenVis2022_dialog import CenVis2022Dialog
-from .qgis_census_data_visualization import CensusDataVisualizer
+from .dialogs.CenVis2022_dialog import CenVis2022Dialog
+from .classes.qgis_census_data_visualization import CensusDataVisualizer
 import os.path
 
 from .config.config_manager import ConfigurationManager
