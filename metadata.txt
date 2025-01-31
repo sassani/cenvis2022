@@ -5,15 +5,15 @@
 [general]
 name=CenVis2022
 qgisMinimumVersion=3.0
-description=Download the US cencus data for 2022
+description=Download the US census data for 2022
 version=0.1
 author=Ardavan Sassani
 email=a.sassani@gmail.com
 
-about=It can connect to the US cencus API and download demographic data for 2022.
+about=It can connect to the US census bureau API and download demographic data for 2022. It needs census bureau API key.
 
-tracker=http://bugs
-repository=http://repo
+tracker=https://github.com/sassani/cenvis2022/issues
+repository=https://github.com/sassani/cenvis2022
 # End of mandatory metadata
 
 # Recommended items:
@@ -25,7 +25,7 @@ hasProcessingProvider=no
 # Tags are comma separated with spaces allowed
 tags=python
 
-homepage=http://homepage
+homepage=https://github.com/sassani/cenvis2022
 category=Plugins
 icon=icon.png
 # experimental flag
