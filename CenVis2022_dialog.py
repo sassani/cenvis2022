@@ -188,8 +188,6 @@ class CenVis2022Dialog(QtWidgets.QDialog, FORM_CLASS_MAIN):
         #         "At least one variable should be selected.",
         #         level=Qgis.Critical, duration=20)
         #     return
-        # print(self.configs.app.data_path)
-        # print([self.items[item.text()] for item in self.lstVariablesList.selectedItems()])
         try:
             self.plugin_instance.testFunctionAtPlugin(
                 self.cbState.currentData(),

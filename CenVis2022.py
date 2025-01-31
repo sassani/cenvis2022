@@ -206,12 +206,13 @@ class CenVis2022:
             f"{self.config_mng.settings.data_path}\\shapes_files\\tl_2020_{state}_tract.zip"
         )
         census_dir = f"{self.config_mng.settings.data_path}\\census_data\\{state}\\{county}"
-        print(f"State file:{shape_path}, County file:{census_dir}")
-        return 0
+        # print(f"State file:{shape_path}, County file:{census_dir}")
+        # return 0
         if len(vars) > 0:
             for var in vars:
                 # data_path = f"State:{shape_path}\nCounty:{census_path}\nvariable:{var}\n\n"
-                print(f"County file:{census_dir}/{var}.json\n")
+                # print(f"County file:{census_dir}/{var}.json\n")
+                pass
         else:
             if os.path.exists(census_dir):
                 files = os.listdir(census_dir)
@@ -219,10 +220,11 @@ class CenVis2022:
                 files = []
             # print(f"Files in {census_path}: {files}")
             for file in files:
-                print(f"County file:{census_dir}/{file}\n")
+                # print(f"County file:{census_dir}/{file}\n")
+                pass
         # print(f"State:{shape_path}\nCounty:{census_path}\nvariable:{vars}\n\n")
 
         # print("data_path:", data_path)
         data_vis = CensusDataVisualizer(shape_path, census_dir)
-        data_vis.render_base_layer()
-        data_vis.process_demographic_data()
+        data_vis.generate_base_layer("Census Tracts", counties_fips=[county])
+        # data_vis.process_demographic_data()

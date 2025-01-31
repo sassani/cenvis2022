@@ -1,9 +1,9 @@
-from qgis.core import QgsVectorLayer, QgsProject
+# from qgis.core import QgsVectorLayer, QgsProject
 from zipfile import ZipFile
 import os
-import tempfile
+# import tempfile
 
-def import_zipped_shapefile(zip_path, layer_name=None):
+def import_zipped_shapefile(zip_path, layer_name=None, counties=None):
     """
     Import a zipped shapefile into QGIS without extracting to a temporary directory.
     
@@ -32,6 +32,8 @@ def import_zipped_shapefile(zip_path, layer_name=None):
         # Create the vector layer
         if not layer_name:
             layer_name = os.path.splitext(os.path.basename(shp_file))[0]
+            
+        return full_path, layer_name
             
         layer = QgsVectorLayer(full_path, layer_name, "ogr")
         
@@ -64,3 +66,28 @@ try:
 except Exception as e:
     print(f"Failed to load shapefile: {str(e)}")
 """
+
+# def generate_qgis_layer(full_path, layer_name):
+#     """
+#     Generate a QGIS vector layer with specified fields, features, and geometry type.
+    
+#     Args:
+#         full_path (str): Full path to the shapefile
+#         layer_name (str): Name to give the layer in QGIS
+    
+#     Returns:
+#         QgsVectorLayer: The generated vector layer if successful, None otherwise
+#     """
+#     try:
+#         # Create memory layer
+#         layer = QgsVectorLayer(full_path, layer_name, "ogr")
+        
+#         # Check if layer is valid
+#         if not layer.isValid():
+#             raise ValueError("Layer failed to load!")
+        
+#         return layer
+        
+#     except Exception as e:
+#         print(f"Error: {str(e)}")
+#         return None
