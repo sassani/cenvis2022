@@ -35,59 +35,17 @@ def import_zipped_shapefile(zip_path, layer_name=None, counties=None):
             
         return full_path, layer_name
             
-        layer = QgsVectorLayer(full_path, layer_name, "ogr")
+        # layer = QgsVectorLayer(full_path, layer_name, "ogr")
         
-        # Check if layer is valid
-        if not layer.isValid():
-            raise ValueError("Layer failed to load!")
+        # # Check if layer is valid
+        # if not layer.isValid():
+        #     raise ValueError("Layer failed to load!")
             
-        # Add the layer to the QGIS project
-        QgsProject.instance().addMapLayer(layer)
+        # # Add the layer to the QGIS project
+        # QgsProject.instance().addMapLayer(layer)
         
-        return layer
+        # return layer
         
     except Exception as e:
         print(f"Error: {str(e)}")
         return None
-
-# Example usage
-"""
-# Basic usage
-layer = import_zipped_shapefile("path/to/your/shapefile.zip")
-
-# With custom layer name
-layer = import_zipped_shapefile("path/to/your/shapefile.zip", "My Custom Layer Name")
-
-# With error handling
-try:
-    layer = import_zipped_shapefile("path/to/your/shapefile.zip")
-    if layer:
-        print(f"Layer loaded successfully with {layer.featureCount()} features")
-except Exception as e:
-    print(f"Failed to load shapefile: {str(e)}")
-"""
-
-# def generate_qgis_layer(full_path, layer_name):
-#     """
-#     Generate a QGIS vector layer with specified fields, features, and geometry type.
-    
-#     Args:
-#         full_path (str): Full path to the shapefile
-#         layer_name (str): Name to give the layer in QGIS
-    
-#     Returns:
-#         QgsVectorLayer: The generated vector layer if successful, None otherwise
-#     """
-#     try:
-#         # Create memory layer
-#         layer = QgsVectorLayer(full_path, layer_name, "ogr")
-        
-#         # Check if layer is valid
-#         if not layer.isValid():
-#             raise ValueError("Layer failed to load!")
-        
-#         return layer
-        
-#     except Exception as e:
-#         print(f"Error: {str(e)}")
-#         return None

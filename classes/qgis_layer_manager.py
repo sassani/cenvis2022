@@ -184,7 +184,6 @@ def join_dataframe_to_layer(layer: QgsVectorLayer, dataframe: pd.DataFrame, join
         
         # Create a dictionary from DataFrame
         data_dict = dataframe.set_index(join_field_variable).to_dict('index')
-        
         # Start editing the layer
         layer.startEditing()
         

@@ -227,4 +227,4 @@ class CenVis2022:
         # print("data_path:", data_path)
         data_vis = CensusDataVisualizer(shape_path, census_dir)
         data_vis.generate_base_layer("Census Tracts", counties_fips=[county])
-        # data_vis.process_demographic_data()
+        data_vis.process_demographic_data()

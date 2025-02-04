@@ -10,7 +10,7 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QVariant
 
-from .file_manager import read_zipped_shapefile, read_json_data
+from .file_manager import read_zipped_shapefile, get_dataframe_from_json
 
 # from .qgis_shapefile_manager import import_zipped_shapefile
 from .qgis_layer_manager import (
@@ -28,6 +28,7 @@ class CensusDataVisualizer:
         self.shapefile_path = shapefile_path
         self.json_folder = json_folder
         self.base_layer = None
+        # print(shapefile_path, json_folder)
 
     def generate_base_layer(
         self, layer_name=None, counties_fips: list[str] | None = None
@@ -52,8 +53,8 @@ class CensusDataVisualizer:
             if json_file.endswith(".json"):
                 field_name = json_file[:-5]
                 data_path = os.path.join(self.json_folder, json_file)
-                df = read_json_data(data_path)
-                print(df)
+                df = get_dataframe_from_json(data_path)
+                # print(df)
                 # with open(os.path.join(self.json_folder, json_file), 'r') as f:
                 #     data = json.load(f)
                 success = join_dataframe_to_layer(self.base_layer, df)

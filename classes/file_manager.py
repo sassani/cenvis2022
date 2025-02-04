@@ -93,7 +93,7 @@ def read_zipped_shapefile(zip_path):
         return None
 
 
-def read_json_data(json_path):
+def get_dataframe_from_json(json_path)-> pd.DataFrame:
     """
     Read a json file and return the data as a pandas DataFrame.    
     Args:
@@ -108,14 +108,15 @@ def read_json_data(json_path):
             if 'GIDTR' not in headers:
                 raise ValueError("GIDTR not found in the JSON headers")
             values = data[1:]
-            df = pd.DataFrame(values, columns=headers)
+            df = pd.DataFrame(values, columns=headers, dtype='string')
             
-            # df = df.set_index('GIDTR')
             # Remove columns 'state', 'county', 'tract' if they exist
             columns_to_remove = ['state', 'county', 'tract']
             df = df.drop(columns=[col for col in columns_to_remove if col in df.columns])
             # Convert columns with $ or . to numeric
             for col in df.columns:
+                if col == 'GIDTR':
+                    continue
                 df[col] = pd.to_numeric(df[col].replace({'\$': '', ',': ''}, regex=True), errors='coerce')
             return df
     except Exception as e:
